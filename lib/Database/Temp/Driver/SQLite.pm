@@ -20,12 +20,16 @@ use Try::Tiny;
 
 =encoding utf8
 
-=for stopwords
-
-=over
-
 =cut
 
+
+=head2 is_available
+
+Can this driver provide a database?
+
+Return boolean.
+
+=cut
 
 sub is_available {
     my %needed = (
@@ -39,6 +43,14 @@ sub is_available {
     }
 
 }
+
+=head2 new
+
+Create a temp database.
+
+User should never call this subroutine directly, only via L<Database::Temp>.
+
+=cut
 
 sub new {
     my ($class, %params) = @_;

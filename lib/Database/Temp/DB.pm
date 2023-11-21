@@ -12,9 +12,7 @@ use warnings;
 
 =encoding utf8
 
-=for stopwords Readonly deinit
-
-=over
+=for Pod::Coverage ^(BUILD|DEMOLISH)$
 
 =cut
 
@@ -57,7 +55,7 @@ my $ENV_VAR_FOR_KEEPING_DB = 'DATABASE_TEMP_KEEP';
 
 The short name of the L<Database::Temp> driver,
 for example, in the case of L<Database::Temp::Driver::SQLite>
-the value would be B<SQLite>. Read only.
+the value would be B<SQLite>. Read-only.
 
 =cut
 
@@ -68,7 +66,7 @@ has driver => (
 
 =head2 name
 
-Name of the database. Read only.
+Name of the database. Read-only.
 
 =cut
 
@@ -86,7 +84,7 @@ In the case of Postgres, cleanup would be dropping the database.
 
 User can change this value.
 Value 1 means cleanup will be done, value 0 means
-no cleapup.
+no cleanup.
 
 Default value is true: database will be erased when this
 object drops out of the scope.
@@ -104,7 +102,7 @@ Reference to the subroutine which is executed
 immediately after database creation. Therefore,
 this action has already been executed
 by the time user gets hold of this object.
-Readonly.
+Read-only.
 
 =cut
 
@@ -136,7 +134,7 @@ has deinit => (
 =head2 attr
 
 These four fields are required to make a connection
-to a database. Readonly.
+to a database. Read-only.
 
 B<dsn>, B<username> and B<password> are strings.
 B<attr> is a hashref.
@@ -163,12 +161,12 @@ has attr => (
     isa => HashRef,
 );
 
-=head2
+=head2 info
 
 This field can contain other related information which
 is not required for establishing connection and creating
 a database handle, but which can be useful to the user or
-required by the driver when doing cleanup. Readonly.
+required by the driver when doing cleanup. Read-only.
 
 =cut
 

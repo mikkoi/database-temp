@@ -12,10 +12,6 @@ use warnings;
 
 =encoding utf8
 
-=for stopwords temp database
-
-=over
-
 =cut
 
 
@@ -118,7 +114,7 @@ sub new {
             unless $params{'basename'} =~ m/[[:alnum:]_]{1,}/msx;
         $basename = $params{'basename'};
     }
-    my $name = $basename . random_name();
+    my $name = $basename . _random_name();
     if( defined $params{'name'}) {
         $name = $basename . $params{'name'};
     }
@@ -152,7 +148,7 @@ sub new {
     );
 }
 
-sub random_name {
+sub _random_name {
     # return (substr create_uuid_as_string(UUID_V1), 0, $SHORT_UUID_LEN);
     return (substr Data::GUID->new, 0, $SHORT_UUID_LEN);
 }
