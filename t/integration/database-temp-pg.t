@@ -1,5 +1,6 @@
 #!perl
 ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+## no critic (ControlStructures::ProhibitPostfixControls)
 
 use strict;
 use warnings;
@@ -12,12 +13,15 @@ use Test2::V0;
 set_encoding('utf8');
 
 use Const::Fast;
+use Try::Tiny;
 
 # Activate for testing
 # use Log::Any::Adapter ('Stdout', log_level => 'debug' );
 
 use Database::Temp ();
 
+skip_all('Skip testing with PostgreSQL; Not available')
+    if( ! Database::Temp->is_available( driver => 'Pg' ) );
 
 subtest 'Pg: Shortest example' => sub {
     my $db = Database::Temp->new(
