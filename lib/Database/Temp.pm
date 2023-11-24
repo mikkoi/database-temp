@@ -38,7 +38,6 @@ With Database::Temp you can quickly create a temporary database
 and be sure it gets removed automatically when your reference to it
 is deleted, normally when the scope ends.
 
-
 =cut
 
 use Module::Load qw( load );
@@ -47,10 +46,11 @@ use Carp qw{ croak };
 use UUID::Tiny qw{ create_uuid_as_string UUID_V1 };
 use Data::GUID;
 use Const::Fast;
-const my $SHORT_UUID_LEN => 8;
+use Try::Tiny;
 
 use Database::Temp::DB ();
 
+const my $SHORT_UUID_LEN => 8;
 const my $DEFAULT_BASENAME => 'database_temp_';
 const my $DEFAULT_CLEANUP  => 1;
 const my $DEFAULT_INIT_METHOD => sub { };
@@ -146,6 +146,43 @@ sub new {
         deinit => $deinit,
         args => $args,
     );
+}
+
+=head2 is_available
+
+Confirm a driver is available and it can
+create a temporary database.
+
+Return boolean
+
+=head3 Parameters
+
+=over 8
+
+=item driver
+
+Available drivers: SQLite. No default value.
+
+=back
+
+=cut
+
+sub is_available {
+    my ($class, %params) = @_;
+
+    # Load driver module
+    my $driver_module= _driver_module( $params{'driver'} );
+    my $can_load;
+    try {
+        load $driver_module;
+        $can_load = 1;
+        1;
+    } catch {
+        $can_load = 0;
+    };
+    return 0 if( ! $can_load );
+
+    return $driver_module->is_available();
 }
 
 sub _driver_module {
