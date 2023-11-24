@@ -23,6 +23,7 @@ use Module::Load::Conditional qw( can_load );
 
 use DBI;
 use Log::Any;
+use Try::Tiny;
 
 =head2 is_available
 
@@ -33,15 +34,27 @@ Return boolean.
 =cut
 
 sub is_available {
+    my $_log = Log::Any->get_logger(category => 'Database::Temp');
     my %needed = (
         'DBD::Pg' => 1.41_01,
     );
-    if( can_load( modules => \%needed ) ) {
-        return 1;
-    } else {
-        Log::Any->get_logger(category => 'Database::Temp')->infof('Cannot load module %s, %s', %needed);
+    if( ! can_load( modules => \%needed ) ) {
+        $_log->infof('Cannot load module %s, %s', %needed);
         return 0;
     }
+    my $dbh;
+    my $ok = 1;
+    try {
+        $dbh = _open_dbh( _main_db_connection() );
+        $dbh->disconnect();
+        1;
+    } catch {
+        my $error = $_;
+        $_log->errorf('Cannot connect to main db connection. Error: %s',$error);
+        $ok = 0;
+    };
+    return 0 if( ! $ok );
+    return 1;
 }
 
 sub _main_db_connection {
@@ -71,7 +84,7 @@ sub _open_dbh {
 
 sub _create {
     my ($name) = @_;
-    my $_log = Log::Any->get_logger;
+    my $_log = Log::Any->get_logger(category => 'Database::Temp');
 
     my $temp_db_name = $name;
     my $temp_user_name = $name;
