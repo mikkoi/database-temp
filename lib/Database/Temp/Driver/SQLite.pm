@@ -60,7 +60,7 @@ sub new {
     my $filename = $params{'name'};
     my $filepath = File::Spec->catfile( $dir, $filename );
     my $dsn = "dbi:SQLite:uri=file:$filepath?mode=rwc";
-        $_log->debugf( 'Created temp filepath \'%s\'', $filepath );
+    $_log->debugf( 'Created temp filepath \'%s\'', $filepath );
 
     my %attrs = (
         # 'ReadOnly'          => 0,
