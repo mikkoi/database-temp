@@ -114,7 +114,7 @@ sub new {
             unless $params{'basename'} =~ m/[[:alnum:]_]{1,}/msx;
         $basename = $params{'basename'};
     }
-    my $name = $basename . _random_name();
+    my $name = $basename . random_name();
     if( defined $params{'name'}) {
         $name = $basename . $params{'name'};
     }
@@ -189,8 +189,7 @@ sub _driver_module {
     return "${ \__PACKAGE__ }::Driver::$_[0]";
 }
 
-sub _random_name {
-    # return (substr create_uuid_as_string(UUID_V1), 0, $SHORT_UUID_LEN);
+sub random_name {
     return (substr Data::GUID->new, 0, $SHORT_UUID_LEN);
 }
 
