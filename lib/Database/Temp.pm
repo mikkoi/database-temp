@@ -100,7 +100,7 @@ sub new {
     my ($class, %params) = @_;
 
     # Load driver module
-    my $driver_module = "${class}::Driver::${ \$params{'driver'} }";
+    my $driver_module = _driver_module( $params{'driver'} );
     load $driver_module;
 
     if( ! $driver_module->is_available() ) {
@@ -146,6 +146,10 @@ sub new {
         deinit => $deinit,
         args => $args,
     );
+}
+
+sub _driver_module {
+    return "${ \__PACKAGE__ }::Driver::$_[0]";
 }
 
 sub _random_name {
