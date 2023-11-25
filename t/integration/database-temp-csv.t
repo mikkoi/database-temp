@@ -1,5 +1,6 @@
 #!perl
 ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+## no critic (ControlStructures::ProhibitPostfixControls)
 
 use strict;
 use warnings;
@@ -12,15 +13,19 @@ use Test2::V0;
 set_encoding('utf8');
 use Test2::Plugin::BailOnFail;
 
+use File::Spec;
+use File::Temp ();
+
+use Path::Tiny;
+use Const::Fast;
+
 # Activate for testing
 # use Log::Any::Adapter ('Stdout', log_level => 'debug' );
 
-use File::Spec;
-use File::Temp ();
-use Path::Tiny;
-
 use Database::Temp ();
-use Const::Fast;
+
+skip_all('Skip testing with CSV; Not available')
+    if( ! Database::Temp->is_available( driver => 'CSV' ) );
 
 const my $DDL => <<~'EOF';
     CREATE TABLE test_table (
@@ -253,8 +258,6 @@ subtest 'CSV: Test database dir has a designated dirpath and we use db after obj
 };
 
 subtest 'CSV: Test database dir is random and we use db after object is collected' => sub {
-    # Create a tempdir in /tmp (Unix).
-    # my $dir = File::Temp->newdir( cleanup => 0 ); # Do not cleanup when out of scope.
     my $basename = 'keep_';
     my $name = 'temp_test_db' . Database::Temp::random_name();
     my $fullname = $basename . $name;
