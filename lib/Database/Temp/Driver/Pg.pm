@@ -17,8 +17,6 @@ use warnings;
 =cut
 
 
-use parent 'Database::Temp::Driver::Base';
-
 use Module::Load::Conditional qw( can_load );
 
 use DBI;
