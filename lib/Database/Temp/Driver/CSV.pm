@@ -60,7 +60,7 @@ sub new {
     my $dir = $params{'args'}->{'dir'} // File::Spec->tmpdir();
     my $db_dir = $params{'name'};
     my $dirpath = File::Spec->catfile( $dir, $db_dir );
-    make_path( $dirpath, { verbose => 1, mode => 0o711, } );
+    make_path( $dirpath, { verbose => 0, mode => 0o711, } );
     my $dsn = 'dbi:CSV:';
     $_log->debugf( 'Created temp dirpath \'%s\'', $dirpath );
 
@@ -83,7 +83,7 @@ sub new {
 
     # Construct start method
     my $_start = sub {
-        my ($dbh, $name, $info, $driver) = @_;
+        my ($dbh, $name) = @_;
         Log::Any->get_logger(category => 'Database::Temp')->debugf( 'Created temp db \'%s\'', $name );
     };
 
@@ -94,7 +94,7 @@ sub new {
     } else { # SCALAR
         # Attn. CSV does not have transactions (begin_work, commit)
         $init = sub {
-            my ($dbh, $name, $info, $driver) = @_;
+            my ($dbh) = @_;
             foreach my $row (split qr/;\s*/msx, $params{'init'}) {
                 $dbh->do( $row );
             }
@@ -107,7 +107,7 @@ sub new {
         $deinit = $params{'deinit'};
     } else { # SCALAR
         $deinit = sub {
-            my ($dbh, $name, $info) = @_;
+            my ($dbh) = @_;
             $dbh->begin_work();
             foreach my $row (split qr/;\s*/msx, $params{'deinit'}) {
                 $dbh->do( $row );
@@ -119,8 +119,8 @@ sub new {
 
     # Construct _cleanup method
     my $_cleanup = sub {
-        my ($dbh, $name, $info, $driver) = @_;
-            $_log->infof('Deleting file %s', $info->{'filepath'});
+        my ($dbh, $name, $info) = @_;
+            $_log->infof('Deleting dir %s for temp db \'%s\'', $info->{'dirpath'}, $name);
         remove_tree($info->{'dirpath'}, { safe => 1, });
     };
 
