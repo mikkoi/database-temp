@@ -79,7 +79,7 @@ sub new {
 
     # Construct start method
     my $_start = sub {
-        my ($dbh, $name, $info, $driver) = @_;
+        my ($dbh, $name) = @_;
         Log::Any->get_logger(category => 'Database::Temp')->debugf( 'Created temp db \'%s\'', $name );
     };
 
@@ -89,7 +89,7 @@ sub new {
         $init = $params{'init'};
     } else { # SCALAR
         $init = sub {
-            my ($dbh, $name, $info, $driver) = @_;
+            my ($dbh) = @_;
             $dbh->begin_work();
             foreach my $row (split qr/;\s*/msx, $params{'init'}) {
                 $dbh->do( $row );
@@ -104,7 +104,7 @@ sub new {
         $deinit = $params{'deinit'};
     } else { # SCALAR
         $deinit = sub {
-            my ($dbh, $name, $info) = @_;
+            my ($dbh) = @_;
             $dbh->begin_work();
             foreach my $row (split qr/;\s*/msx, $params{'deinit'}) {
                 $dbh->do( $row );
@@ -116,8 +116,8 @@ sub new {
 
     # Construct _cleanup method
     my $_cleanup = sub {
-        my ($dbh, $name, $info, $driver) = @_;
-            $_log->infof('Deleting file %s', $info->{'filepath'});
+        my ($dbh, $name, $info) = @_;
+            $_log->infof('Deleting file %s, db %s', $info->{'filepath'}, $name);
         unlink $info->{'filepath'};
     };
 

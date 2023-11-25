@@ -108,11 +108,9 @@ sub new {
     } else { # SCALAR
         $deinit = sub {
             my ($dbh) = @_;
-            $dbh->begin_work();
             foreach my $row (split qr/;\s*/msx, $params{'deinit'}) {
                 $dbh->do( $row );
             }
-            $dbh->commit;
             return;
         }
     }

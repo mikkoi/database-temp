@@ -127,7 +127,6 @@ sub new {
     my $_log = Log::Any->get_logger(category => 'Database::Temp');
 
     my $name = $params{'name'};
-    my $args = $params{'args'};
     _create( $name );
     my $dsn = _compile_dsn( $name, 'localhost', '5432', 'DBHandle' );
     $_log->debugf( 'Created temp database \'%s\'', $name );
@@ -150,7 +149,7 @@ sub new {
     # Construct start method
     my $_start = sub {
         ## no critic (Variables::ProhibitReusedNames)
-        my ($dbh, $name, $info, $driver, $in_global_destruction) = @_;
+        my ($dbh, $name) = @_;
         my $_log = Log::Any->get_logger(category => 'Database::Temp');
         $_log->debugf( 'Created temp db \'%s\'', $name );
     };
@@ -161,7 +160,7 @@ sub new {
         $init = $params{'init'};
     } else { # SCALAR
         $init = sub {
-            my ($dbh, $name) = @_; ## no critic (Variables::ProhibitReusedNames)
+            my ($dbh) = @_;
             $dbh->begin_work();
             foreach my $row (split qr/;\s*/msx, $params{'init'}) {
                 $dbh->do( $row );
@@ -176,7 +175,7 @@ sub new {
         $deinit = $params{'deinit'};
     } else { # SCALAR
         $deinit = sub {
-            my ($dbh, $name) = @_; ## no critic (Variables::ProhibitReusedNames)
+            my ($dbh) = @_;
             $dbh->begin_work();
             foreach my $row (split qr/;\s*/msx, $params{'deinit'}) {
                 $dbh->do( $row );
@@ -188,7 +187,7 @@ sub new {
 
     # Construct _cleanup method
     my $_cleanup = sub {
-        my ($dbh, $name, $info, $driver, $in_global_destruction) = @_; ## no critic (Variables::ProhibitReusedNames)
+        my ($dbh, $name) = @_; ## no critic (Variables::ProhibitReusedNames)
 
         # Drop database
         my $_log = Log::Any->get_logger(category => 'Database::Temp'); ## no critic (Variables::ProhibitReusedNames)
