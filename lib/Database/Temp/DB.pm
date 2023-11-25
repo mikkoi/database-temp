@@ -44,7 +44,7 @@ use DBI;
 use Carp qw( shortmess );
 
 use Moo;
-use Types::Standard qw( Str Int Bool HashRef CodeRef );
+use Types::Standard qw( Str Int Bool HashRef CodeRef Maybe );
 use Log::Any;
 
 my $ENV_VAR_FOR_KEEPING_DB = 'DATABASE_TEMP_KEEP';
@@ -152,9 +152,11 @@ has dsn => (
 );
 has username => (
     is      => 'ro',
+    isa      => Maybe[Str],
 );
 has password => (
     is      => 'ro',
+    isa      => Maybe[Str],
 );
 has attr => (
     is      => 'ro',
