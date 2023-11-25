@@ -1,7 +1,4 @@
 package Database::Temp::Driver::Pg;
-# no critic (Documentation::RequirePodAtEnd)
-# no critic (Documentation::RequirePodSections)
-# no critic (Subroutines::RequireArgUnpacking)
 
 use strict;
 use warnings;
