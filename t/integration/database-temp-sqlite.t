@@ -1,5 +1,6 @@
 #!perl
 ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+## no critic (ControlStructures::ProhibitPostfixControls)
 
 use strict;
 use warnings;
@@ -11,15 +12,19 @@ use utf8;
 use Test2::V0;
 set_encoding('utf8');
 
+use File::Spec;
+use File::Temp ();
+
+use Path::Tiny;
+use Const::Fast;
+
 # Activate for testing
 # use Log::Any::Adapter ('Stdout', log_level => 'debug' );
 
-use File::Spec;
-use File::Temp ();
-use Path::Tiny;
-
 use Database::Temp ();
-use Const::Fast;
+
+skip_all('Skip testing with SQLite; Not available')
+    if( ! Database::Temp->is_available( driver => 'SQLite' ) );
 
 const my $DDL => <<~'EOF';
     CREATE TABLE test_table (
