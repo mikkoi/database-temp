@@ -62,6 +62,7 @@ the value would be B<SQLite>. Read-only.
 has driver => (
     is => 'ro',
     isa => Str,
+    required => 1,
 );
 
 =head2 name
@@ -73,6 +74,7 @@ Name of the database. Read-only.
 has name => (
     is => 'ro',
     isa => Str,
+    required => 1,
 );
 
 =head2 cleanup
@@ -93,7 +95,8 @@ object drops out of the scope.
 
 has cleanup => (
     is => 'rw',
-    isa => Bool
+    isa => Bool,
+    required => 1,
 );
 
 =head2 init
@@ -109,6 +112,7 @@ Read-only.
 has init => (
     is => 'ro',
     isa => CodeRef,
+    required => 1,
 );
 
 =head2 deinit
@@ -123,6 +127,7 @@ Default value is pointer to an empty subroutine.
 has deinit => (
     is      => 'rw',
     isa     => CodeRef,
+    required => 1,
 );
 
 =head2 dsn
@@ -147,20 +152,24 @@ See below.
 
 # Connection info
 has dsn => (
-    is      => 'ro',
-    isa     => Str,
+    is       => 'ro',
+    isa      => Str,
+    required => 1,
 );
 has username => (
-    is      => 'ro',
+    is       => 'ro',
     isa      => Maybe[Str],
+    required => 1,
 );
 has password => (
-    is      => 'ro',
+    is       => 'ro',
     isa      => Maybe[Str],
+    required => 1,
 );
 has attr => (
-    is      => 'ro',
-    isa => HashRef,
+    is       => 'ro',
+    isa      => HashRef,
+    required => 1,
 );
 
 =head2 info
@@ -212,10 +221,12 @@ sub _execute {
 has _start => (
     is => 'ro',
     isa => CodeRef,
+    required => 1,
 );
 has _cleanup => (
     is => 'ro',
     isa => CodeRef,
+    required => 1,
 );
 
 =head2 connection_info
