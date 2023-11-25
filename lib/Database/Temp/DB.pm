@@ -184,10 +184,11 @@ required by the driver when doing cleanup. Read-only.
 has info => (
     is      => 'ro',
     isa => HashRef,
+    required => 1,
 );
 
 sub BUILD {
-    my ($self, $args) = @_;
+    my ($self) = @_;
     $self->_execute( $self->_start );
     $self->_execute( $self->init );
     return;
@@ -197,7 +198,6 @@ sub DEMOLISH {
     my ($self, $in_global_destruction) = @_;
     my $_log = Log::Any->get_logger(category => 'Database::Temp');
 
-    my $driver = $self->driver;
     $self->_execute($self->deinit);
     if( defined $ENV{ $ENV_VAR_FOR_KEEPING_DB } ) {
         $_log->infof( 'Env var %s set. Keeping temp db', $ENV_VAR_FOR_KEEPING_DB ) if( ! $in_global_destruction );
