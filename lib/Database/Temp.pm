@@ -170,6 +170,8 @@ Available drivers: SQLite. No default value.
 sub is_available {
     my ($class, %params) = @_;
 
+    return 0 if( ! $params{'driver'} );
+
     # Load driver module
     my $driver_module= _driver_module( $params{'driver'} );
     my $can_load;
@@ -188,6 +190,12 @@ sub is_available {
 sub _driver_module {
     return "${ \__PACKAGE__ }::Driver::$_[0]";
 }
+
+=head2 random_name
+
+Generate a random name. A string of 8 random letters and characters.
+
+=cut
 
 sub random_name {
     return (substr Data::GUID->new, 0, $SHORT_UUID_LEN);
