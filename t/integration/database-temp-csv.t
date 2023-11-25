@@ -205,4 +205,99 @@ subtest 'CSV: Test database dir has a designated dirpath' => sub {
     done_testing;
 };
 
+subtest 'CSV: Test database dir has a designated dirpath and we use db after object is collected' => sub {
+    # Create a tempdir in /tmp (Unix).
+    my $dir = File::Temp->newdir( cleanup => 0 ); # Do not cleanup when out of scope.
+    my $basename = 'keep_';
+    my $name = 'temp_test_db';
+    my $fullname = $basename . $name;
+    my $path;
+    my (@connection_info);
+    {
+        my $db = Database::Temp->new(
+            driver => 'CSV',
+            cleanup => 0,
+            basename => $basename,
+            name => $name,
+            args => { dir => $dir->dirname, },
+            init => \&init_db,
+        );
+        diag 'Test database (' . $db->driver . ') '
+            . $db->name . ' created in dir '
+            . $dir->dirname . "\n";
+        is( $db->name, $fullname, 'Name matches with given name' );
+        ok( path($dir->dirname)->is_dir, 'main dir (of course) exists' );
+        $path = File::Spec->catfile( $dir->dirname, $fullname );
+        ok( path($path)->is_dir, 'Dir exists' );
+        @connection_info = $db->connection_info;
+    }
+    diag "path: $path";
+    ok( path($path)->is_dir, 'Dir is here' );
+
+    {
+        my $dbh = DBI->connect( @connection_info );
+        my $r = $dbh->do('INSERT INTO test_table VALUES(1, \'My Test Name\', 33)');
+        $r = $dbh->do('INSERT INTO test_table VALUES(2, \'My Other Name\', 43)');
+        my $rows = $dbh->selectall_arrayref(
+            'SELECT id, name, age FROM test_table ORDER BY id',
+        );
+        is($rows->[0]->[1], 'My Test Name', 'selectall returns right');
+        is($rows->[1]->[1], 'My Other Name', 'selectall returns right');
+    }
+
+    # Manually remove dir
+    path($path)->remove_tree();
+    ok( ! path($path)->is_dir, 'Dir is gone' );
+
+    done_testing;
+};
+
+subtest 'CSV: Test database dir is random and we use db after object is collected' => sub {
+    # Create a tempdir in /tmp (Unix).
+    # my $dir = File::Temp->newdir( cleanup => 0 ); # Do not cleanup when out of scope.
+    my $basename = 'keep_';
+    my $name = 'temp_test_db' . Database::Temp::random_name();
+    my $fullname = $basename . $name;
+    my $path;
+    my (@connection_info);
+    {
+        my $db = Database::Temp->new(
+            driver => 'CSV',
+            cleanup => 0,
+            basename => $basename,
+            name => $name,
+            # args => { dir => $dir->dirname, },
+            init => \&init_db,
+        );
+        $path = $db->info->{'dirpath'};
+        diag 'Test database (' . $db->driver . ') '
+            . $db->name . ' created in dir '
+            . $path . "\n";
+        is( $db->name, $fullname, 'Name matches with given name' );
+        ok( path($path)->is_dir, 'main dir (of course) exists' );
+        diag 'path: ' . $path;
+        ok( path($path)->is_dir, 'Dir exists' );
+        @connection_info = $db->connection_info;
+    }
+    diag "path: $path";
+    ok( path($path)->is_dir, 'Dir is here' );
+
+    {
+        my $dbh = DBI->connect( @connection_info );
+        my $r = $dbh->do('INSERT INTO test_table VALUES(1, \'My Test Name\', 33)');
+        $r = $dbh->do('INSERT INTO test_table VALUES(2, \'My Other Name\', 43)');
+        my $rows = $dbh->selectall_arrayref(
+            'SELECT id, name, age FROM test_table ORDER BY id',
+        );
+        is($rows->[0]->[1], 'My Test Name', 'selectall returns right');
+        is($rows->[1]->[1], 'My Other Name', 'selectall returns right');
+    }
+
+    # Manually remove dir
+    path($path)->remove_tree();
+    ok( ! path($path)->is_dir, 'Dir is gone' );
+
+    done_testing;
+};
+
 done_testing;
