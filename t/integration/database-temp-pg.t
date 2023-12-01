@@ -49,7 +49,7 @@ subtest 'Pg: Database name' => sub {
     {
         # DB name
         my $name = $db->name;
-        my $rows = $dbh->selectall_arrayref( <<~"EOT" );
+        my $rows = $dbh->selectall_arrayref( <<"EOT" );
     SELECT datname FROM pg_catalog.pg_database
     WHERE datname = '$name'
     ORDER BY datname
@@ -70,7 +70,7 @@ sub short_uuid {
 subtest 'Pg: Test db gets a new schema' => sub {
     {
         my $schema_name = "test_${\(short_uuid())}";
-        my $DDL = <<~'EOF';
+        my $DDL = <<'EOF';
     CREATE TABLE test_table (
         id INTEGER
         , name VARCHAR(20)
@@ -86,10 +86,10 @@ EOF
             cleanup => 1,
             args => { },
             # init => sub {
-            init => <<~"EOT",
-CREATE SCHEMA $schema_name;
-SET search_path TO $schema_name;
-$DDL
+            init => <<"EOT",
+    CREATE SCHEMA $schema_name;
+    SET search_path TO $schema_name;
+    $DDL
 EOT
         );
         diag "Test database ${\($db->driver)}) ${\($db->name)} created.\n";
@@ -115,10 +115,10 @@ subtest 'Pg: Test db gets created and removed' => sub {
         );
         diag 'Test database (' . $db->driver . ') ' . $db->name . " created.\n";
         $name = $db->name;
-        my $rows = DBI->connect( $db->connection_info )->selectall_arrayref( <<~"EOT" );
-SELECT datname FROM pg_catalog.pg_database
-WHERE datname = '$name'
-ORDER BY datname
+        my $rows = DBI->connect( $db->connection_info )->selectall_arrayref( <<"EOT" );
+    SELECT datname FROM pg_catalog.pg_database
+    WHERE datname = '$name'
+    ORDER BY datname
 EOT
         is($rows->[0]->[0], $name);
         @connection_info = $db->connection_info;

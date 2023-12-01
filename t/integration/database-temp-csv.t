@@ -27,14 +27,13 @@ use Database::Temp ();
 skip_all('Skip testing with CSV; Not available')
     if( ! Database::Temp->is_available( driver => 'CSV' ) );
 
-const my $DDL => <<~'EOF';
+const my $DDL => <<'EOF';
     CREATE TABLE test_table (
         id INTEGER
         , name VARCHAR(20)
         , age INT
         );
 EOF
-;
 
 sub init_db {
     my ($dbh, $name) = @_;

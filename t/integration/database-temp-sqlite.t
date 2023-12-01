@@ -26,7 +26,7 @@ use Database::Temp ();
 skip_all('Skip testing with SQLite; Not available')
     if( ! Database::Temp->is_available( driver => 'SQLite' ) );
 
-const my $DDL => <<~'EOF';
+const my $DDL => <<'EOF';
     CREATE TABLE test_table (
         id INTEGER
         , name VARCHAR(20)
