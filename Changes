@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.002     2023-12-01 22:17:54+01:00 Europe/Berlin
           * Fix literal octal string
           * Fix here doc in tests to work with earlier Perls
           * Add extra dependencies for author tests
