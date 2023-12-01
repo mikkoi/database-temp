@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          * Fix literal octal string
           * Fix here doc in tests to work with earlier Perls
           * Add extra dependencies for author tests
 

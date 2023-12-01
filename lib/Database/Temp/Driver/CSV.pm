@@ -15,6 +15,7 @@ use File::Spec;
 
 use Log::Any;
 use Try::Tiny;
+use Const::Fast;
 
 =pod
 
@@ -30,6 +31,8 @@ Can this driver provide a database?
 Return boolean.
 
 =cut
+
+const my $TEMP_PATH_CHMOD => 700;
 
 sub is_available {
     my $_log = Log::Any->get_logger(category => 'Database::Temp');
@@ -58,7 +61,7 @@ sub new {
     my $dir = $params{'args'}->{'dir'} // File::Spec->tmpdir();
     my $db_dir = $params{'name'};
     my $dirpath = File::Spec->catfile( $dir, $db_dir );
-    make_path( $dirpath, { verbose => 0, mode => 0o711, } );
+    make_path( $dirpath, { verbose => 0, mode => oct($TEMP_PATH_CHMOD), } );
     my $dsn = 'dbi:CSV:';
     $_log->debugf( 'Created temp dirpath \'%s\'', $dirpath );
 
