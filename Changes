@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          * Add extra dependencies for author tests
 
 0.001     2023-11-28 22:14:04+01:00 Europe/Stockholm
           * Initial release
