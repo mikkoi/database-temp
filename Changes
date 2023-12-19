@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+            * Remove SQLite from test because in some test environments SQLite is not installed.
 
 0.002     2023-12-01 22:17:54+01:00 Europe/Berlin
           * Fix literal octal string

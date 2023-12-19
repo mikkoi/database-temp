@@ -16,10 +16,6 @@ set_encoding('utf8');
 
 describe 'method `is_available`' => sub {
     my ($driver, $expected_availability);
-    case 'SQLite driver' => sub {
-        $driver = 'SQLite';
-        $expected_availability = 1;
-    };
     case 'Missing driver' => sub {
         $driver = 'Missing';
         $expected_availability = 0;
